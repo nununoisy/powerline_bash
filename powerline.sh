@@ -52,8 +52,16 @@ if [[ $GITCMT -eq '0- +0' ]]; then
 fi
 git rev-parse --abbrev-ref HEAD > /dev/null 2>/dev/null
 if [ $? -eq 0 ]; then
-	GIT="\[\e[48;5;${GITBG}m\e[38;5;${GITFG}m\]\x20git\x20${ARROW}\x20${GITRPO}\x20${ARROW}\x20${GITBRN}\x20${ARROW}\x20${GITCMT}\x20\[\e[0m\e[38;5;${GITBG}m\]${SLDARROW}\[\e[0m\]"
-	printf "${GIT}\n"
+	#calculate length and move there onscreen
+	GITLEN=$(( ${#GITBRN} + ${#GITRPO} + ${#GITCMT} + 14 ))
+	printf '\e['
+	printf "$(tput cols)"
+	printf 'C\e['
+	printf "${GITLEN}"
+	printf 'D'
+	GIT="\[\e[0m\e[38;5;${GITBG}m\]${LSLDARROW}\[\e[48;5;${GITBG}m\e[38;5;${GITFG}m\]\x20git\x20${LARROW}\x20${GITRPO}\x20${LARROW}\x20${GITBRN}\x20${LARROW}\x20${GITCMT}\x20\[\e[0m\e[38;5;${GITBG}m\]\[\e[0m\]"
+	printf "${GIT}"
+	printf '\r'
 fi
 printf "${NPSC}${NUSER}${NDIR}"
 printf "\[\e[0m\]\x20"
