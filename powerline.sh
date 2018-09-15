@@ -10,13 +10,21 @@ PSC=$1
 PROCESS=${2//"_update_ps1"/''}
 PROCESS=${PROCESS//"unset"/''}
 
-NDIR=${DIR//"$HOME"/'/~'}
-NDIR="$(echo $NDIR | cut -c 2-)"
-NDIR=${NDIR//\//"\x20${ARROW}\x20"}
+if [[ $DIR != '/' ]]; then
+	NDIR=${DIR//"$HOME"/'/~'}
+	NDIR="$(echo $NDIR | cut -c 2-)"
+	NDIR=${NDIR//\//"\x20${ARROW}\x20"}
+else
+	NDIR=""
+fi
 
 NROOTSLASH="/\x20${ARROW}\x20"
-if test "${PWD##${HOME}}" != "${PWD}"; then
-        NROOTSLASH=""
+if [[ "${PWD##${HOME}}" != "${PWD}" ]]; then
+    NROOTSLASH=""
+fi
+
+if [[ "$DIR" == '/' ]]; then
+	NROOTSLASH="/"
 fi
 
 #nice function (thx Dennis Williamson)
