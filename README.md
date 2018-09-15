@@ -2,7 +2,7 @@
 
 I mean, it's pretty self explanatory.
 
-A powerful powerline PS1 generator witten for and in `bash`.
+A powerful powerline PS1 generator written for and in `bash`.
 
 ## Installation
 
