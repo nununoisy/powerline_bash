@@ -45,18 +45,18 @@ cursorPosition() {
 
 drawTitleBar() {
 	oldCursorPosition=$(cursorPosition)
-	if [[ oldCursorPosition == '0;0' ]]; then
-		oldCursorPosition='1;0'
+	if [[ $oldCursorPosition == "$(($(tput lines) - 1));0" ]]; then
+		oldCursorPosition="$(($(tput lines) - 2));0"
 	fi
-	printf "\[\e[48;5;${DIRBG}m\e[0;0H\]"
-	printf '%*s\n' "${COLUMNS:-$(tput cols)}" ''
+	printf "\[\e[48;5;${DIRBG}m\e[%s;0H\]" "$(tput lines)"
+	printf '%*s' "${COLUMNS:-$(tput cols)}" ''
 	datenow=$(date +'%A, %B %d, %Y')
 	timenow=$(date +'%H:%M')
-	printf "\[\e[0;0H\e[48;5;${USRBG}m\e[38;5;${USRFG}m\]\x20${datenow}\x20\[\e[48;5;${DIRBG}m\e[38;5;${USRBG}m\]${SLDARROW}\x20\[\e[38;5;${DIRFG}m\]${timenow}"
+	printf "\[\e[%s;0H\e[48;5;${USRBG}m\e[38;5;${USRFG}m\]\x20${datenow}\x20\[\e[48;5;${DIRBG}m\e[38;5;${USRBG}m\]${SLDARROW}\x20\[\e[38;5;${DIRFG}m\]${timenow}" "$(tput lines)"
 	#only if they have a battery
-	#batfile="/sys/class/power_supply/BAT${BATNO}/uevent"
+	batfile="/sys/class/power_supply/BAT${BATNO}/uevent"
 	#testing
-	batfile="$HOME/batfile"
+	#batfile="$HOME/batfile"
 	if [[ -f $batfile ]]; then
 		batterylevel=$(cat $batfile | grep -wE "POWER_SUPPLY_CAPACITY" | cut -f 2 -d '=')
 		rawchrgrstatus=$(cat $batfile | grep -wE "POWER_SUPPLY_STATUS" | cut -f 2 -d '=')
@@ -65,7 +65,7 @@ drawTitleBar() {
 			chargestatus=" ${CHRGARROW}"
 		fi
 		printf "\x20${ARROW}${chargestatus}\x20${batterylevel}%%\x20"
-		
+
 		batterychunks=$((( $batterylevel / 10 )))
 		batterychunks=$(printf '%.0f' $batterychunks)
 		for i in $(seq 1 9); do
