@@ -15,7 +15,7 @@ You need to download a patched font for powerline and set up your terminal to us
 
 There are a bunch provided [here](https://github.com/powerline/fonts).
 
-Put the powerline.sh file somewhere safe. Make sure it's easy to remember. Place the config file at `~/.config/powerline.cfg`.
+Put the powerline.sh file somewhere safe. Make sure it's easy to remember.
 
 Then put this in your `.bashrc`:
 ```bash
