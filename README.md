@@ -20,6 +20,7 @@ Put the powerline.sh file somewhere safe. Make sure it's easy to remember. Place
 Then put this in your `.bashrc`:
 ```bash
 POWERLINEDIR=/path/to/powerline
+ln -sf "${POWERLINEDIR}/powerline.cfg" ~/.config/powerline.cfg
 
 source "${POWERLINEDIR}/bash-preexec/bash-preexec.sh"
 
