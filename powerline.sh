@@ -3,11 +3,14 @@
 #grab the config file
 source ${HOME}/.config/powerline.cfg
 
+#now with bash-preexec!!
+
 #set up some variables guys
 USER="$(whoami)"
 DIR="$(pwd)"
-PSC=$1
-PROCESS=${2//"_update_ps1"/''}
+MODE="$1"
+PSC=$2
+PROCESS=${3//"_update_ps1"/''}
 PROCESS=${PROCESS//"unset"/''}
 
 if [[ $DIR != '/' ]]; then
@@ -101,10 +104,25 @@ drawTitleBar() {
 		printf "${GIT}"
 		printf '\r'
 	fi
-	printf '\e['
-	printf "${oldCursorPosition}"
-	printf 'H\n'
+	printf '\e[%sH\n' "${oldCursorPosition}"
 }
+
+clearTitleBar() {
+	oldCursorPosition=$(cursorPosition)
+	printf '\e[%s;0H\e[K' "$(tput lines)"
+	printf '\e[%sH\n' "${oldCursorPosition}"
+}
+
+if [[ "$MODE" == "clearTitleBar" ]]; then
+	clearTitleBar
+	exit
+elif [[ "$MODE" == "draw" ]]; then
+	#this is fine
+	MODE="draw"
+else
+	echo "This is not meant to be called interactively."
+	echo "If you didn't, check your .bashrc"
+fi
 
 drawTitleBar
 
@@ -116,18 +134,8 @@ fi
 NDIR="\[\e[48;5;${DIRBG}m\e[38;5;${DIRFG}m\]\x20${NROOTSLASH}${NDIR}\x20${ARROW}\x20${ROOTPROMPT}\x20\[\e[0m\e[38;5;${DIRBG}m\]${SLDARROW}"
 
 NUSER="\[\e[48;5;${USRBG}m\e[38;5;${USRFG}m\]\x20${USER}\x20\[\e[38;5;${USRBG}m\e[48;5;${DIRBG}m\]${SLDARROW}"
-if [ -z $PROCESS ]; then
-	ERRTXT=${err[$PSC]}
-else
-	ERRDB="err${PROCESS}"
-	ERRDBVAR=${!ERRDB}
-	ERRDBV="$ERRDB[$PSC]"
-	if [ -z $ERRDBVAR ]; then
-		ERRTXT=${err[$PSC]}
-	else
-		ERRTXT=${!ERRDBV}
-	fi
-fi
+
+ERRTXT=${err[$PSC]}
 
 if [ $PSC != 0 ]; then
 	NPSC="\[\e[48;5;${FAILBG}m\e[38;5;${FAILFG}m\]\x20${FAIL}\x20\[\e[38;5;${FAILTXT}m\]${ERRTXT}\[\e[38;5;${FAILBG}m\e[48;5;${USRBG}m\]${SLDARROW}"

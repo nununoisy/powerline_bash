@@ -4,6 +4,8 @@ I mean, it's pretty self explanatory.
 
 A powerful powerline PS1 generator written for and in `bash`.
 
+Now with rcaloras' [bash-preexec](https://github.com/rcaloras/bash-preexec)!
+
 ## Installation
 
 First, get the dependencies from your package manager:
@@ -17,9 +19,15 @@ Put the powerline.sh file somewhere safe. Make sure it's easy to remember. Place
 
 Then put this in your `.bashrc`:
 ```bash
-trap 'export pcmd=$tcmd; tcmd=$BASH_COMMAND' DEBUG
-PROMPT_COMMAND="_update_ps1; $PROMPT_COMMAND"
-function _update_ps1() {
-    PS1="$(/path/to/powerline_bash/powerline.sh $? $pcmd)"
+POWERLINEDIR=/path/to/powerline
+
+source "${POWERLINEDIR}/bash-preexec/bash-preexec.sh"
+
+preexec() {
+    ${POWERLINEDIR}/powerline.sh clearTitleBar
+}
+
+precmd() {   
+    PS1="$(${POWERLINEDIR}/powerline.sh draw $? '')"
 }
 ```
