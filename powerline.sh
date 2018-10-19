@@ -49,6 +49,7 @@ cursorPosition() {
 drawTitleBar() {
 	oldCursorPosition=$(cursorPosition)
 	if [[ $oldCursorPosition == "$(($(tput lines) - 1));0" ]]; then
+		printf '\n'
 		oldCursorPosition="$(($(tput lines) - 2));0"
 	fi
 	printf "\[\e[48;5;${DIRBG}m\e[%s;0H\]" "$(tput lines)"
@@ -116,12 +117,26 @@ clearTitleBar() {
 if [[ "$MODE" == "clearTitleBar" ]]; then
 	clearTitleBar
 	exit
-elif [[ "$MODE" == "draw" ]]; then
-	#this is fine
-	MODE="draw"
-else
+elif [[ "$MODE" == "bashrc" ]]; then
+	# I symlink the config file to ~/.config since that's a pretty standard location
+	POWERLINEDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
+	cat <<- EOF
+	ln -sf "${POWERLINEDIR}/powerline.cfg" ~/.config/powerline.cfg;
+	source "${POWERLINEDIR}/bash-preexec/bash-preexec.sh";
+	preexec() {
+	    ${POWERLINEDIR}/powerline.sh clearTitleBar;
+	};
+	precmd() {
+	EOF
+    echo -ne '	PS1="$('
+    echo -ne "${POWERLINEDIR}"
+    echo '/powerline.sh draw $? 0)";'
+	echo '}'
+	exit 0
+elif [[ "$MODE" != "draw" ]]; then
 	echo "This is not meant to be called interactively."
 	echo "If you didn't, check your .bashrc"
+	exit 1
 fi
 
 drawTitleBar
