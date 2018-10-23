@@ -95,13 +95,13 @@ drawTitleBar() {
 	git rev-parse --abbrev-ref HEAD > /dev/null 2>/dev/null
 	if [ $? -eq 0 ]; then
 		#calculate length and move there onscreen
-		GITLEN=$(( ${#GITBRN} + ${#GITRPO} + ${#GITCMT} + 14 ))
+		GITLEN=$(( ${#GITBRN} + ${#GITRPO} + ${#GITCMT} + 16 ))
 		printf '\e['
 		printf "$(tput cols)"
 		printf 'C\e['
 		printf "${GITLEN}"
 		printf 'D'
-		GIT="\[\e[48;5;${DIRBG}m\e[38;5;${GITBG}m\]${LSLDARROW}\[\e[48;5;${GITBG}m\e[38;5;${GITFG}m\]\x20git\x20${LARROW}\x20${GITRPO}\x20${LARROW}\x20${GITBRN}\x20${LARROW}\x20${GITCMT}\x20\[\e[0m\e[38;5;${GITBG}m\]\[\e[0m\]"
+		GIT="\[\e[48;5;${DIRBG}m\e[38;5;${GITBG}m\]${LSLDARROW}\[\e[48;5;${GITBG}m\e[38;5;${GITFG}m\]\x20git\x20${LARROW}\x20${GITRPO}\x20${LARROW}\x20${GITARROW}\x20${GITBRN}\x20${LARROW}\x20${GITCMT}\x20\[\e[0m\e[38;5;${GITBG}m\]\[\e[0m\]"
 		printf "${GIT}"
 		printf '\r'
 	fi
@@ -143,7 +143,7 @@ drawTitleBar
 
 ROOTPROMPT='$'
 if [[ $(id -u) == '0' ]]; then
-	ROOTPROMPT='#'
+	ROOTPROMPT="\[\e[48;5;${ERRBG}\e[38;5;${ERRFG}\]#"
 fi
 
 NDIR="\[\e[48;5;${DIRBG}m\e[38;5;${DIRFG}m\]\x20${NROOTSLASH}${NDIR}\x20${ARROW}\x20${ROOTPROMPT}\x20\[\e[0m\e[38;5;${DIRBG}m\]${SLDARROW}"
