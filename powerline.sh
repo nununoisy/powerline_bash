@@ -49,6 +49,7 @@ cursorPosition() {
 drawTitleBar() {
 	oldCursorPosition=$(cursorPosition)
 	if [[ $oldCursorPosition == "$(($(tput lines) - 1));0" ]]; then
+		clearTitleBar
 		printf '\n'
 		oldCursorPosition="$(($(tput lines) - 2));0"
 	fi
