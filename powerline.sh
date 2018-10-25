@@ -89,19 +89,19 @@ drawTitleBar() {
 	fi
 	GITBRN="$(git rev-parse --abbrev-ref HEAD 2>/dev/null)" # requires newer git
 	GITRPO="$(basename \"$(git rev-parse --show-toplevel 2>/dev/null))"
-	GITCMT="$(git rev-list --left-right --count origin/${GITBRN}...${GITBRN} 2>/dev/null | sed 's:\t:- +:g')"
-	if [[ $GITCMT -eq '0- +0' ]]; then
-		GITCMT="even"
+	#hacky but it works
+	GITCMT=$(printf "${GITDNARROW}" | xargs printf "%s $(git rev-list --left-right --count origin/${GITBRN}...${GITBRN} 2>/dev/null | sed 's:\t: '${GITUPARROW}' :g')")
+	EMPCMT=$(printf "${GITDNARROW} 0 ${GITUPARROW} 0")
+	GITCMTLEN=${#GITCMT}
+	if [[ $GITCMT == $EMPCMT ]]; then
+		GITCMT="${CHECK}"
+		GITCMTLEN=1
 	fi
 	git rev-parse --abbrev-ref HEAD > /dev/null 2>/dev/null
 	if [ $? -eq 0 ]; then
 		#calculate length and move there onscreen
-		GITLEN=$(( ${#GITBRN} + ${#GITRPO} + ${#GITCMT} + 16 ))
-		printf '\e['
-		printf "$(tput cols)"
-		printf 'C\e['
-		printf "${GITLEN}"
-		printf 'D'
+		GITLEN=$(( ${#GITBRN} + ${#GITRPO} + ${GITCMTLEN} + 16 ))
+		printf '\e[%sC\e[%sD' "$(tput cols)" "${GITLEN}"
 		GIT="\[\e[48;5;${DIRBG}m\e[38;5;${GITBG}m\]${LSLDARROW}\[\e[48;5;${GITBG}m\e[38;5;${GITFG}m\]\x20git\x20${LARROW}\x20${GITRPO}\x20${LARROW}\x20${GITARROW}\x20${GITBRN}\x20${LARROW}\x20${GITCMT}\x20\[\e[0m\e[38;5;${GITBG}m\]\[\e[0m\]"
 		printf "${GIT}"
 		printf '\r'
